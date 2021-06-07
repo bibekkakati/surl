@@ -1,0 +1,33 @@
+body.light {
+	background-color: var(--lightColor);
+}
+
+.light .logo-text {
+	color: var(--darkColor);
+}
+
+.light .theme-btn {
+	color: var(--darkColor);
+}
+
+.light .hero-text {
+	color: var(--darkColor);
+}
+
+.light .color-text {
+	color: var(--pColor);
+}
+
+.light .url-input {
+	color: var(--darkColor);
+	border: solid 2px var(--tColor);
+}
+
+.light .surl-btn {
+	background-color: var(--pColor);
+	color: var(--lightColor);
+}
+
+.light .result-link {
+	color: var(--darkColor);
+}

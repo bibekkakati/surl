@@ -1,0 +1,33 @@
+body.dark {
+	background-color: var(--darkColor);
+}
+
+.dark .logo-text {
+	color: var(--lightColor);
+}
+
+.dark .theme-btn {
+	color: var(--lightColor);
+}
+
+.dark .hero-text {
+	color: var(--lightColor);
+}
+
+.dark .color-text {
+	color: var(--pColor);
+}
+
+.dark .url-input {
+	color: var(--darkColor);
+	border: solid 2px var(--darkColor);
+}
+
+.dark .surl-btn {
+	background-color: var(--pColor);
+	color: var(--bgColor);
+}
+
+.dark .result-link {
+	color: var(--lightColor);
+}
