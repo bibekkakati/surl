@@ -73,6 +73,7 @@ input:active {
 }
 
 .hero-text {
+	text-align: center;
 	font-size: 64px;
 	font-weight: 700;
 }
@@ -100,7 +101,7 @@ input:active {
 
 .surl-btn {
 	height: 52px;
-	padding: 2 22px;
+	padding: 0 22px;
 	border-radius: 16px;
 	width: 160px;
 	font-size: 18px;
@@ -163,4 +164,35 @@ input:active {
 	padding: 10px 16px;
 	border-radius: 8px;
 	border: solid 2px #f8131f;
+}
+
+@media only screen and (max-width: 600px) {
+	.hero-div {
+		margin: 0 10px;
+	}
+
+	.input-div {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.url-input {
+		height: 42px;
+		width: 90vw;
+		border-radius: 8px;
+		padding: 3px 3vw;
+		font-size: 14px;
+	}
+
+	.surl-btn {
+		margin-top: 20px;
+		width: fit-content;
+		height: 42px;
+		padding: 0 18px;
+		border-radius: 8px;
+		font-size: 16px;
+		font-weight: 600;
+	}
 }

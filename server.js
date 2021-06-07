@@ -7,7 +7,7 @@ const shortenUrl = require("./handlers/shortenUrl");
 const PORT = process.env.PORT || 5000;
 const app = express();
 
-app.use(express.static(path.join(__dirname, "./public")));
+app.use(express.static(path.join(__dirname, "/public")));
 
 app.get("/surl", async (req, res) => {
 	const { url } = req.query;
