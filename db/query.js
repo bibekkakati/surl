@@ -114,7 +114,7 @@ const doesUrlExist = (originalUrl) => {
 			})
 			.catch((error) => {
 				console.log("URL EXISTS ERROR: " + error.message);
-				return reject("Something went wrong");
+				return resolve(null);
 			});
 	});
 };

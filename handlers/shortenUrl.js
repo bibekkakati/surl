@@ -15,13 +15,10 @@ const shortenUrl = (url) => {
 		}
 		const reGenLimit = 10;
 		let surlId = null;
-		try {
-			surlId = await doesUrlExist(url);
-			if (surlId) {
-				return resolve(surlId);
-			}
-		} catch (error) {
-			return reject(error);
+
+		surlId = await doesUrlExist(url);
+		if (surlId) {
+			return resolve(surlId);
 		}
 		for (let i = 0; i < reGenLimit; i++) {
 			surlId = generateSurl();
