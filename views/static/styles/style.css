@@ -123,7 +123,6 @@ input:active {
 	align-items: center;
 	column-gap: 20px;
 	width: fit-content;
-	max-width: 400px;
 	margin: auto;
 	margin-top: 40px;
 	padding: 4px 16px;
@@ -132,11 +131,12 @@ input:active {
 	font-weight: 400;
 	cursor: pointer;
 	border: solid 2px var(--tColor);
-	overflow: hidden;
 }
 
 .result-link {
 	letter-spacing: 1px;
+	max-width: 400px;
+	overflow: hidden;
 }
 
 .result-div .copy-tooltip {
@@ -200,5 +200,9 @@ input:active {
 		border-radius: 8px;
 		font-size: 16px;
 		font-weight: 600;
+	}
+
+	.result-link {
+		max-width: 240px;
 	}
 }
