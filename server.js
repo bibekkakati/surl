@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
 const path = require("path");
 const { createTable } = require("./db/query");
 const { getShortUrl, getUrl, getHits } = require("./handlers");
@@ -9,6 +10,11 @@ const { getShortUrl, getUrl, getHits } = require("./handlers");
 const PORT = process.env.PORT || 5000;
 const app = express();
 
+const apiLimiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 10,
+});
+app.use("/api/", apiLimiter);
 app.use(helmet());
 app.use(
 	cors({
