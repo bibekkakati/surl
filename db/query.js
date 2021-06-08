@@ -18,6 +18,11 @@ const DB_CONFIG = {
 	},
 };
 
+const COL_ID = "id";
+const COL_URL = "url";
+const COL_HITS = "hits";
+const COL_EXPIRY = "expiry";
+
 const createTable = () => {
 	const data = JSON.stringify({
 		operation: "create_table",
@@ -44,8 +49,13 @@ const createTable = () => {
 
 const insertUrl = (surlID, url) => {
 	return new Promise((resolve, reject) => {
+		const date = new Date();
+		const year = date.getFullYear();
+		const month = date.getMonth();
+		const day = date.getDate();
+		const expiry = new Date(year + 1, month, day).toUTCString();
 		const hits = 0;
-		const query = `INSERT INTO ${DB_NAME}.${SURL_TABLE} (id, url, hits) VALUE ('${surlID}', '${url}', ${hits})`;
+		const query = `INSERT INTO ${DB_NAME}.${SURL_TABLE} (${COL_ID}, ${COL_URL}, ${COL_HITS}, ${COL_EXPIRY}) VALUE ('${surlID}', '${url}', ${hits}, '${expiry}')`;
 		const data = JSON.stringify({
 			operation: "sql",
 			sql: query,
@@ -71,7 +81,7 @@ const insertUrl = (surlID, url) => {
 
 const getOriginalUrl = (surlID) => {
 	return new Promise((resolve, reject) => {
-		const query = `SELECT url, hits FROM ${DB_NAME}.${SURL_TABLE} WHERE id='${surlID}'`;
+		const query = `SELECT ${COL_URL}, ${COL_HITS} FROM ${DB_NAME}.${SURL_TABLE} WHERE ${COL_ID}='${surlID}'`;
 		const data = JSON.stringify({
 			operation: "sql",
 			sql: query,
@@ -94,9 +104,9 @@ const getOriginalUrl = (surlID) => {
 	});
 };
 
-const doesUrlExist = (originalUrl) => {
+const getUrlHits = (surlID) => {
 	return new Promise((resolve, reject) => {
-		const query = `SELECT id FROM ${DB_NAME}.${SURL_TABLE} WHERE url='${originalUrl}'`;
+		const query = `SELECT ${COL_HITS} FROM ${DB_NAME}.${SURL_TABLE} WHERE ${COL_ID}='${surlID}'`;
 		const data = JSON.stringify({
 			operation: "sql",
 			sql: query,
@@ -108,19 +118,19 @@ const doesUrlExist = (originalUrl) => {
 			.then((response) => {
 				const result = response.data;
 				if (result.length > 0) {
-					return resolve(result[0].id);
+					return resolve(result[0].hits);
 				}
-				return resolve(null);
+				return reject("URL not found");
 			})
 			.catch((error) => {
-				console.log("URL EXISTS ERROR: " + error.message);
-				return resolve(null);
+				console.log("GET URL HITS ERROR: " + error.message);
+				return reject("Something went wrong");
 			});
 	});
 };
 
 const updateUrlHits = (surlId, hits) => {
-	const query = `UPDATE ${DB_NAME}.${SURL_TABLE} SET hits=${hits} WHERE id='${surlId}'`;
+	const query = `UPDATE ${DB_NAME}.${SURL_TABLE} SET ${COL_HITS}=${hits} WHERE ${COL_ID}='${surlId}'`;
 	const data = JSON.stringify({
 		operation: "sql",
 		sql: query,
@@ -139,6 +149,6 @@ module.exports = {
 	createTable,
 	insertUrl,
 	getOriginalUrl,
-	doesUrlExist,
 	updateUrlHits,
+	getUrlHits,
 };

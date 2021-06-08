@@ -28,6 +28,10 @@ input:active {
 	outline: none;
 }
 
+.none {
+	visibility: hidden;
+}
+
 .header {
 	display: flex;
 	flex-direction: row;
@@ -119,6 +123,7 @@ input:active {
 	align-items: center;
 	column-gap: 20px;
 	width: fit-content;
+	max-width: 400px;
 	margin: auto;
 	margin-top: 40px;
 	padding: 4px 16px;
@@ -127,6 +132,7 @@ input:active {
 	font-weight: 400;
 	cursor: pointer;
 	border: solid 2px var(--tColor);
+	overflow: hidden;
 }
 
 .result-link {

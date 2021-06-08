@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partials/head'); %>
+</head>
+
+<body class="none" id="parent">
+    <%- include('./partials/header'); %>
+        <div class="hero-div">
+            <p class="hero-text"><span class="color-text">S</span>horten Your <span class="color-text">URL</span></p>
+        </div>
+        <div class="input-div" id="input-div">
+            <input id="url-input" class="url-input" type="text" maxlength="2048" name="Long URL"
+                placeholder="Paste your long URL" spellcheck="false" aria-autocomplete="none" aria-multiline="false">
+            <button id="surl-btn" class="surl-btn">
+                Get Surl
+            </button>
+        </div>
+        <div class="result-div" id="result-div">
+            <p id="result-link" class="result-link"></p>
+            <img src="/assets/copy.png" alt="Copy" width="20px" height="20px">
+            <span id="copy-tooltip" class="copy-tooltip">Copy to clipboard</span>
+        </div>
+        <div id="error-block" class="error-block">
+        </div>
+</body>
+
+</html>

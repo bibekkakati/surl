@@ -4,7 +4,8 @@
 	"description": "A URL Shortener Web App",
 	"main": "server.js",
 	"scripts": {
-		"start": "node server.js"
+		"start": "node server.js",
+		"dev": "nodemon server.js"
 	},
 	"keywords": [
 		"URL",
@@ -14,9 +15,13 @@
 	"license": "ISC",
 	"dependencies": {
 		"axios": "^0.21.1",
+		"cors": "^2.8.5",
 		"dotenv": "^10.0.0",
+		"ejs": "^3.1.6",
 		"express": "^4.17.1",
+		"helmet": "^4.6.0",
 		"nanoid": "^3.1.23",
+		"node-cache": "^5.1.2",
 		"validate.js": "^0.13.1"
 	},
 	"devDependencies": {
