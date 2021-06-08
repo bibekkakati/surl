@@ -17,7 +17,8 @@ const errorBlock = document.getElementById("error-block");
 
 const BASE_URL = window.location.origin;
 
-let currThemeClassName = window.localStorage.getItem("THEME");
+let currThemeClassName =
+	window.localStorage.getItem("THEME") || LIGHT_MODE_CLASS_NAME;
 parent.className = currThemeClassName;
 if (currThemeClassName === LIGHT_MODE_CLASS_NAME) {
 	themeBtn.innerText = "Light Mode";
