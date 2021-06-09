@@ -31,7 +31,7 @@ const createTable = () => {
 		hash_attribute: "id",
 	});
 
-	let config = { ...DB_CONFIG, data };
+	const config = { ...DB_CONFIG, data };
 
 	axios(config)
 		.then((response) => {
@@ -47,102 +47,95 @@ const createTable = () => {
 		});
 };
 
-const insertUrl = (surlID, url) => {
-	return new Promise((resolve, reject) => {
-		const date = new Date();
-		const year = date.getFullYear();
-		const month = date.getMonth();
-		const day = date.getDate();
-		const expiry = new Date(year + 1, month, day).toUTCString();
-		const hits = 0;
-		const query = `INSERT INTO ${DB_NAME}.${SURL_TABLE} (${COL_ID}, ${COL_URL}, ${COL_HITS}, ${COL_EXPIRY}) VALUE ('${surlID}', '${url}', ${hits}, '${expiry}')`;
-		const data = JSON.stringify({
-			operation: "sql",
-			sql: query,
-		});
-
-		let config = { ...DB_CONFIG, data };
-
-		axios(config)
-			.then((response) => {
-				const { inserted_hashes } = response.data;
-				if (inserted_hashes.length > 0) {
-					return resolve(surlID);
-				} else {
-					return resolve(null);
-				}
-			})
-			.catch((error) => {
-				console.log("INSERT ERROR: " + error.message);
-				return reject("Something went wrong");
-			});
-	});
-};
-
-const getOriginalUrl = (surlID) => {
-	return new Promise((resolve, reject) => {
-		const query = `SELECT ${COL_URL}, ${COL_HITS} FROM ${DB_NAME}.${SURL_TABLE} WHERE ${COL_ID}='${surlID}'`;
-		const data = JSON.stringify({
-			operation: "sql",
-			sql: query,
-		});
-
-		let config = { ...DB_CONFIG, data };
-
-		axios(config)
-			.then((response) => {
-				const result = response.data;
-				if (result.length > 0) {
-					return resolve(result[0]);
-				}
-				return reject("URL not found");
-			})
-			.catch((error) => {
-				console.log("GET ORIGINAL URL ERROR: " + error.message);
-				return reject("Something went wrong");
-			});
-	});
-};
-
-const getUrlHits = (surlID) => {
-	return new Promise((resolve, reject) => {
-		const query = `SELECT ${COL_HITS} FROM ${DB_NAME}.${SURL_TABLE} WHERE ${COL_ID}='${surlID}'`;
-		const data = JSON.stringify({
-			operation: "sql",
-			sql: query,
-		});
-
-		let config = { ...DB_CONFIG, data };
-
-		axios(config)
-			.then((response) => {
-				const result = response.data;
-				if (result.length > 0) {
-					return resolve(result[0].hits);
-				}
-				return reject("URL not found");
-			})
-			.catch((error) => {
-				console.log("GET URL HITS ERROR: " + error.message);
-				return reject("Something went wrong");
-			});
-	});
-};
-
-const updateUrlHits = (surlId, hits) => {
-	const query = `UPDATE ${DB_NAME}.${SURL_TABLE} SET ${COL_HITS}=${hits} WHERE ${COL_ID}='${surlId}'`;
+const insertUrl = async (id, url) => {
+	const date = new Date();
+	const year = date.getFullYear();
+	const month = date.getMonth();
+	const day = date.getDate();
+	const expiry = new Date(year + 1, month, day).toUTCString();
+	const hits = 0;
+	const query = `INSERT INTO ${DB_NAME}.${SURL_TABLE} (${COL_ID}, ${COL_URL}, ${COL_HITS}, ${COL_EXPIRY}) VALUE ('${id}', '${url}', ${hits}, '${expiry}')`;
 	const data = JSON.stringify({
 		operation: "sql",
 		sql: query,
 	});
 
-	let config = { ...DB_CONFIG, data };
+	const config = { ...DB_CONFIG, data };
 
-	axios(config)
-		.then((response) => {})
-		.catch((error) => {
-			console.log("UPDATE HITS ERROR: " + error.message);
-		});
+	try {
+		const response = await axios(config);
+		const { inserted_hashes } = response.data;
+		if (inserted_hashes.length > 0) {
+			return [id, null];
+		}
+		return [null, null];
+	} catch (error) {
+		return [null, "Something went wrong"];
+	}
+};
+
+const getOriginalUrl = async (id) => {
+	const query = `SELECT ${COL_URL}, ${COL_HITS} FROM ${DB_NAME}.${SURL_TABLE} WHERE ${COL_ID}='${id}'`;
+	const data = JSON.stringify({
+		operation: "sql",
+		sql: query,
+	});
+
+	const config = { ...DB_CONFIG, data };
+
+	try {
+		const response = await axios(config);
+		const result = response.data;
+		if (result.length > 0) {
+			return [result[0], null];
+		}
+		return [null, "URL not found"];
+	} catch (error) {
+		return [null, "Something went wrong"];
+	}
+};
+
+const getUrlHits = async (id) => {
+	const query = `SELECT ${COL_HITS} FROM ${DB_NAME}.${SURL_TABLE} WHERE ${COL_ID}='${id}'`;
+	const data = JSON.stringify({
+		operation: "sql",
+		sql: query,
+	});
+
+	const config = { ...DB_CONFIG, data };
+
+	try {
+		const response = await axios(config);
+		const result = response.data;
+		if (result.length > 0) {
+			return [result[0].hits, null];
+		}
+		return [null, "URL not found"];
+	} catch (error) {
+		return [null, "Something went wrong"];
+	}
+};
+
+const updateUrlHits = async (id, hits, callback) => {
+	const query = `UPDATE ${DB_NAME}.${SURL_TABLE} SET ${COL_HITS}=${hits} WHERE ${COL_ID}='${id}'`;
+	const data = JSON.stringify({
+		operation: "sql",
+		sql: query,
+	});
+
+	const config = { ...DB_CONFIG, data };
+
+	try {
+		const response = await axios(config);
+		const { update_hashes } = response.data;
+		if (update_hashes.length > 0) {
+			callback();
+			return [hits, null];
+		}
+		return [null, null];
+	} catch (error) {
+		return [null, "Something went wrong"];
+	}
 };
 
 module.exports = {

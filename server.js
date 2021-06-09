@@ -31,7 +31,7 @@ app.enable("trust proxy");
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(
-	express.static(path.join(__dirname, "/views/static"), {
+	express.static(path.join(__dirname, "/public"), {
 		maxAge: 10 * 24 * 60 * 60 * 1000,
 	})
 );
@@ -42,39 +42,36 @@ app.get("/", (req, res) => {
 
 app.get("/api/surl", async (req, res) => {
 	const { url } = req.query;
-	try {
-		let surl = await getShortUrl(url);
-		surl = req.protocol + "://" + req.get("host") + "/" + surl;
-		return res.status(200).send({
-			success: true,
-			url: surl,
-		});
-	} catch (error) {
+	const [data, error] = await getShortUrl(url);
+	if (error !== null) {
 		return res.status(200).send({
 			success: false,
 			error: error,
 		});
 	}
+	const surl = req.protocol + "://" + req.get("host") + "/" + data;
+	return res.status(200).send({
+		success: true,
+		url: surl,
+	});
 });
 
 app.get("/:surlId", async (req, res) => {
 	const { surlId } = req.params;
-	try {
-		let originalUrl = await getUrl(surlId);
-		return res.redirect(302, originalUrl);
-	} catch (error) {
+	const [originalUrl, error] = await getUrl(surlId);
+	if (error !== null) {
 		return res.redirect(302, "/");
 	}
+	return res.redirect(302, originalUrl);
 });
 
 app.get("/:surlId/hits", async (req, res) => {
 	const { surlId } = req.params;
-	try {
-		let hits = await getHits(surlId);
-		return res.render("pages/hits", { hits });
-	} catch (error) {
+	const [hits, error] = await getHits(surlId);
+	if (error !== null) {
 		return res.redirect(302, "/");
 	}
+	return res.render("pages/hits", { hits });
 });
 
 app.listen(PORT, () => {

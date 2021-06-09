@@ -1,27 +1,21 @@
 const { getUrlHits } = require("../db/query");
 const urlStore = require("../store/urlStore");
 
-const getHits = (surlId) => {
-	return new Promise(async (resolve, reject) => {
-		if (!surlId) {
-			return reject(null);
-		}
-
-		const data = urlStore.get(surlId);
-
-		// Cache hit
-		if (data) {
-			return resolve(data.hits);
-		}
-
-		//Cache miss
-		try {
-			let hits = await getUrlHits(surlId);
-			return resolve(hits);
-		} catch (error) {
-			return reject(error);
-		}
-	});
+const getHits = async (surlId) => {
+	if (!surlId) {
+		return [null, "Invalid Surl ID"];
+	}
+	const data = urlStore.get(surlId);
+	// Cache hit
+	if (data && data.hits >= 0) {
+		return [data.hits, null];
+	}
+	//Cache miss
+	const [result, error] = await getUrlHits(surlId);
+	if (error !== null) {
+		return [null, error];
+	}
+	return [result, null];
 };
 
 module.exports = getHits;
