@@ -60,16 +60,16 @@ app.get("/:surlId", async (req, res) => {
 	const { surlId } = req.params;
 	const [originalUrl, error] = await getUrl(surlId);
 	if (error !== null) {
-		return res.redirect(302, "/");
+		return res.redirect(301, "/");
 	}
-	return res.redirect(302, originalUrl);
+	return res.redirect(301, originalUrl);
 });
 
 app.get("/:surlId/hits", async (req, res) => {
 	const { surlId } = req.params;
 	const [hits, error] = await getHits(surlId);
 	if (error !== null) {
-		return res.redirect(302, "/");
+		return res.redirect(301, "/");
 	}
 	return res.render("pages/hits", { hits });
 });
