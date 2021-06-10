@@ -1,29 +1,15 @@
-var axios = require("axios");
+const request = require("../config/request");
+const DB_CONFIG = require("../config/database");
 
-const DB_URL = process.env.DB_URL;
-const BASIC_AUTH =
-	"Basic " +
-	Buffer.from(
-		process.env.DB_USERNAME + ":" + process.env.DB_PASSWORD
-	).toString("base64");
-const DB_NAME = process.env.DB_NAME;
+const DB_NAME = "surls";
 const SURL_TABLE = "surl_table";
-
-const DB_CONFIG = {
-	method: "post",
-	url: DB_URL,
-	headers: {
-		"Content-Type": "application/json",
-		Authorization: BASIC_AUTH,
-	},
-};
 
 const COL_ID = "id";
 const COL_URL = "url";
 const COL_HITS = "hits";
 const COL_EXPIRY = "expiry";
 
-const createTable = () => {
+const createTable = async () => {
 	const data = JSON.stringify({
 		operation: "create_table",
 		schema: DB_NAME,
@@ -33,18 +19,17 @@ const createTable = () => {
 
 	const config = { ...DB_CONFIG, data };
 
-	axios(config)
-		.then((response) => {
-			const { message, error } = response.data;
-			if (error) {
-				console.log("CREATE TABLE ERROR: " + error);
-			} else {
-				console.log("CREATE TABLE INFO: " + message);
-			}
-		})
-		.catch((error) => {
-			console.log("CATCH CREATE TABLE ERROR: " + error.message);
-		});
+	try {
+		const response = await request(config);
+		const { message, error } = response.data;
+		if (error) {
+			console.log("CREATE TABLE ERROR: " + error);
+		} else {
+			console.log("CREATE TABLE INFO: " + message);
+		}
+	} catch (error) {
+		console.log("CATCH CREATE TABLE ERROR: " + error.message);
+	}
 };
 
 const insertUrl = async (id, url) => {
@@ -54,16 +39,24 @@ const insertUrl = async (id, url) => {
 	const day = date.getDate();
 	const expiry = new Date(year + 1, month, day).toUTCString();
 	const hits = 0;
-	const query = `INSERT INTO ${DB_NAME}.${SURL_TABLE} (${COL_ID}, ${COL_URL}, ${COL_HITS}, ${COL_EXPIRY}) VALUE ('${id}', '${url}', ${hits}, '${expiry}')`;
 	const data = JSON.stringify({
-		operation: "sql",
-		sql: query,
+		operation: "insert",
+		schema: DB_NAME,
+		table: SURL_TABLE,
+		records: [
+			{
+				[COL_ID]: id,
+				[COL_URL]: url,
+				[COL_HITS]: hits,
+				[COL_EXPIRY]: expiry,
+			},
+		],
 	});
 
 	const config = { ...DB_CONFIG, data };
 
 	try {
-		const response = await axios(config);
+		const response = await request(config);
 		const { inserted_hashes } = response.data;
 		if (inserted_hashes.length > 0) {
 			return [id, null];
@@ -75,16 +68,18 @@ const insertUrl = async (id, url) => {
 };
 
 const getOriginalUrl = async (id) => {
-	const query = `SELECT ${COL_URL}, ${COL_HITS} FROM ${DB_NAME}.${SURL_TABLE} WHERE ${COL_ID}='${id}'`;
 	const data = JSON.stringify({
-		operation: "sql",
-		sql: query,
+		operation: "search_by_hash",
+		schema: DB_NAME,
+		table: SURL_TABLE,
+		hash_values: [id],
+		get_attributes: [COL_URL, COL_HITS],
 	});
 
 	const config = { ...DB_CONFIG, data };
 
 	try {
-		const response = await axios(config);
+		const response = await request(config);
 		const result = response.data;
 		if (result.length > 0) {
 			return [result[0], null];
@@ -96,16 +91,18 @@ const getOriginalUrl = async (id) => {
 };
 
 const getUrlHits = async (id) => {
-	const query = `SELECT ${COL_HITS} FROM ${DB_NAME}.${SURL_TABLE} WHERE ${COL_ID}='${id}'`;
 	const data = JSON.stringify({
-		operation: "sql",
-		sql: query,
+		operation: "search_by_hash",
+		schema: DB_NAME,
+		table: SURL_TABLE,
+		hash_values: [id],
+		get_attributes: [COL_HITS],
 	});
 
 	const config = { ...DB_CONFIG, data };
 
 	try {
-		const response = await axios(config);
+		const response = await request(config);
 		const result = response.data;
 		if (result.length > 0) {
 			return [result[0].hits, null];
@@ -117,16 +114,22 @@ const getUrlHits = async (id) => {
 };
 
 const updateUrlHits = async (id, hits, callback) => {
-	const query = `UPDATE ${DB_NAME}.${SURL_TABLE} SET ${COL_HITS}=${hits} WHERE ${COL_ID}='${id}'`;
 	const data = JSON.stringify({
-		operation: "sql",
-		sql: query,
+		operation: "insert",
+		schema: DB_NAME,
+		table: SURL_TABLE,
+		records: [
+			{
+				[COL_ID]: id,
+				[COL_HITS]: hits,
+			},
+		],
 	});
 
 	const config = { ...DB_CONFIG, data };
 
 	try {
-		const response = await axios(config);
+		const response = await request(config);
 		const { update_hashes } = response.data;
 		if (update_hashes.length > 0) {
 			callback();

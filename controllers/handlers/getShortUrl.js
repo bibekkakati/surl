@@ -1,7 +1,7 @@
-const { insertUrl } = require("../db/query");
-const getUniqueKey = require("../helpers/getUniqueKey");
-const isValidURL = require("../helpers/isValidURL");
-const urlStore = require("../store/urlStore");
+const { insertUrl } = require("../../db/query");
+const getUniqueKey = require("../../helpers/getUniqueKey");
+const isValidURL = require("../../helpers/isValidURL");
+const urlStore = require("../../store/urlStore");
 
 const getShortUrl = async (url) => {
 	if (!url) {
@@ -16,7 +16,7 @@ const getShortUrl = async (url) => {
 	}
 	// Key Gen Limit is 10
 	const reGenLimit = 10;
-	var surlId = null;
+	var shortUrlId = null;
 
 	for (let i = 0; i < reGenLimit; i++) {
 		const key = getUniqueKey();
@@ -29,7 +29,7 @@ const getShortUrl = async (url) => {
 			break;
 		}
 		if (result) {
-			surlId = key;
+			shortUrlId = key;
 			urlStore.set(key, {
 				url: url,
 				hits: 0,
@@ -37,8 +37,8 @@ const getShortUrl = async (url) => {
 			break;
 		}
 	}
-	if (surlId === null) return [null, "Something went wrong"];
-	return [surlId, null];
+	if (shortUrlId === null) return [null, "Something went wrong"];
+	return [shortUrlId, null];
 };
 
 module.exports = getShortUrl;

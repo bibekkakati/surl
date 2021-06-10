@@ -4,6 +4,8 @@ const LIGHT_MODE_CLASS_NAME = "light";
 const themeBtn = document.getElementById("theme-btn");
 const parent = document.getElementById("parent");
 
+const logoDiv = document.getElementById("logo-div");
+
 const inputDiv = document.getElementById("input-div");
 
 const resultLink = document.getElementById("result-link");
@@ -26,9 +28,14 @@ if (currThemeClassName === LIGHT_MODE_CLASS_NAME) {
 	themeBtn.innerText = "Dark Mode";
 }
 
+logoDiv.onclick = navigateToHome;
 themeBtn.onclick = changeTheme;
 resultDiv.onclick = copyToClipboard;
 getSurlBtn.onclick = getSurl;
+
+function navigateToHome() {
+	window.location.href = "/";
+}
 
 function changeTheme() {
 	if (currThemeClassName === DARK_MODE_CLASS_NAME) {
@@ -73,7 +80,7 @@ function getSurl() {
 	if (url[url.length - 1] === "/") {
 		url = url.slice(0, url.length - 1);
 	}
-	fetch(BASE_URL + "/api/surl?url=" + url)
+	fetch(BASE_URL + "/api/url/short?url=" + url)
 		.then((response) => response.json())
 		.then((data) => {
 			if (data.success) {
