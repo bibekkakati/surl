@@ -28,10 +28,12 @@ if (currThemeClassName === LIGHT_MODE_CLASS_NAME) {
 	themeBtn.innerText = "Dark Mode";
 }
 
-logoDiv.onclick = navigateToHome;
-themeBtn.onclick = changeTheme;
-resultDiv.onclick = copyToClipboard;
-getSurlBtn.onclick = getSurl;
+logoDiv ? (logoDiv.onclick = navigateToHome) : nill();
+themeBtn ? (themeBtn.onclick = changeTheme) : nill();
+resultDiv ? (resultDiv.onclick = copyToClipboard) : nill();
+getSurlBtn ? (getSurlBtn.onclick = getSurl) : nill();
+
+function nill() {}
 
 function navigateToHome() {
 	window.location.href = "/";

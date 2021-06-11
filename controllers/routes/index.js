@@ -1,7 +1,7 @@
-const homeRoutes = require("./root");
+const clientRoutes = require("./root");
 const urlRoutes = require("./url");
 
 module.exports = {
-	homeRoutes,
+	clientRoutes,
 	urlRoutes,
 };

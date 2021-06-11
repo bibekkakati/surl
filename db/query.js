@@ -113,9 +113,9 @@ const getUrlHits = async (id) => {
 	}
 };
 
-const updateUrlHits = async (id, hits, callback) => {
+const updateUrlHits = async (id, hits) => {
 	const data = JSON.stringify({
-		operation: "insert",
+		operation: "update",
 		schema: DB_NAME,
 		table: SURL_TABLE,
 		records: [
@@ -132,7 +132,6 @@ const updateUrlHits = async (id, hits, callback) => {
 		const response = await request(config);
 		const { update_hashes } = response.data;
 		if (update_hashes.length > 0) {
-			callback();
 			return [hits, null];
 		}
 		return [null, null];

@@ -1,17 +1,16 @@
-const { getOriginalUrl, updateUrlHits } = require("../../db/query");
-const urlStore = require("../../store/urlStore");
+const { getOriginalUrl } = require("../../db/query");
+const emitUpdateHits = require("../../events/hits");
+const URL_STORE = require("../../store/urlStore");
 
 const getUrl = async (shortUrlId) => {
 	if (!shortUrlId) {
 		return [null, "Invalid Surl ID"];
 	}
-	const data = urlStore.get(shortUrlId);
+	const data = URL_STORE.get(shortUrlId);
 	// Cache hit
 	if (data && data.url && data.hits >= 0) {
 		data.hits = data.hits + 1;
-		updateUrlHits(shortUrlId, data.hits, () => {
-			urlStore.set(shortUrlId, data);
-		});
+		emitUpdateHits(shortUrlId, data);
 		return [data.url, null];
 	}
 	// Cache miss
@@ -20,7 +19,7 @@ const getUrl = async (shortUrlId) => {
 		return [null, error];
 	}
 	result.hits = result.hits + 1;
-	updateUrlHits(shortUrlId, result.hits, urlStore.set(shortUrlId, result));
+	emitUpdateHits(shortUrlId, result);
 	return [result.url, null];
 };
 

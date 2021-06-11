@@ -1,6 +1,9 @@
 const express = require("express");
+const noCache = require("../../middlewares/noCache");
 const router = express.Router();
 const { getHits, getUrl } = require("../handlers");
+
+router.use(noCache);
 
 router.get("/", (req, res) => {
 	return res.render("index");
@@ -21,17 +24,14 @@ router.get("/:shortUrlId", async (req, res) => {
 	const uniqueVisitor = req.cookies[cookieName] !== shortUrlId;
 	// TODO: unique visitor for analytics and track referrer and ip
 	const [originalUrl, error] = await getUrl(shortUrlId);
-	res.header(
-		"Cache-Control",
-		"no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0"
-	);
+	res.set("Cache-Control", "private, max-age=300");
 	if (error !== null) {
 		return res.redirect(301, "/");
 	}
 	if (uniqueVisitor)
 		res.cookie(cookieName, shortUrlId, {
 			path: "/" + shortUrlId,
-			expires: new Date(Date.now() + 63000000000), // 2 Years
+			maxAge: 63100000, // 2 Years
 			httpOnly: true,
 			secure: process.env.NODE_ENV !== "development",
 		});

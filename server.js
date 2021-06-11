@@ -23,7 +23,7 @@ app.use(
 	})
 );
 
-app.use("/", require("./controllers/routes").homeRoutes);
+app.use("/", require("./controllers/routes").clientRoutes);
 app.use("/api/url", require("./controllers/routes").urlRoutes);
 
 const PORT = process.env.PORT;

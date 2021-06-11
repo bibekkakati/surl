@@ -1,7 +1,7 @@
 const { insertUrl } = require("../../db/query");
-const getUniqueKey = require("../../helpers/getUniqueKey");
 const isValidURL = require("../../helpers/isValidURL");
-const urlStore = require("../../store/urlStore");
+const URL_STORE = require("../../store/urlStore");
+const KEY_STORE = require("../../store/keyStore");
 
 const getShortUrl = async (url) => {
 	if (!url) {
@@ -14,23 +14,23 @@ const getShortUrl = async (url) => {
 	if (url[url.length - 1] === "/") {
 		url = url.slice(0, url.length - 1);
 	}
-	// Key Gen Limit is 10
-	const reGenLimit = 10;
+	// Key Gen Limit is 5
+	const retryLimit = 5;
 	var shortUrlId = null;
 
-	for (let i = 0; i < reGenLimit; i++) {
-		const key = getUniqueKey();
+	for (let i = 0; i < retryLimit; i++) {
+		const key = KEY_STORE.get();
 		// Check if generated key exists in cache
-		if (urlStore.get(key)) {
+		if (URL_STORE.get(key)) {
 			continue;
 		}
 		const [result, error] = await insertUrl(key, url);
 		if (error !== null) {
 			break;
 		}
-		if (result) {
+		if (result !== null) {
 			shortUrlId = key;
-			urlStore.set(key, {
+			URL_STORE.set(key, {
 				url: url,
 				hits: 0,
 			});
