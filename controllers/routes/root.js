@@ -24,11 +24,14 @@ router.get("/:shortUrlId", async (req, res) => {
 	const uniqueVisitor = req.cookies[cookieName] !== shortUrlId;
 	// TODO: unique visitor for analytics and track referrer and ip
 	const [originalUrl, error] = await getUrl(shortUrlId);
+
+	// Caching for 5 mins
 	res.set("Cache-Control", "private, max-age=300");
 	if (error !== null) {
 		return res.redirect(301, "/");
 	}
 	if (uniqueVisitor)
+		// cookie to track unqiue visit to the link
 		res.cookie(cookieName, shortUrlId, {
 			path: "/" + shortUrlId,
 			maxAge: 63100000, // 2 Years

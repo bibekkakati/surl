@@ -32,13 +32,10 @@ const createTable = async () => {
 	}
 };
 
-const insertUrl = async (id, url) => {
-	const date = new Date();
-	const year = date.getFullYear();
-	const month = date.getMonth();
-	const day = date.getDate();
-	const expiry = new Date(year + 1, month, day).toUTCString();
-	const hits = 0;
+const insertUrl = async (id, url, expiry, hits = 0) => {
+	if (!id || !url || !expiry) {
+		throw new Error("INSERT URL QUERY: args missing");
+	}
 	const data = JSON.stringify({
 		operation: "insert",
 		schema: DB_NAME,
@@ -68,12 +65,15 @@ const insertUrl = async (id, url) => {
 };
 
 const getOriginalUrl = async (id) => {
+	if (!id) {
+		throw new Error("GET URL QUERY: args missing");
+	}
 	const data = JSON.stringify({
 		operation: "search_by_hash",
 		schema: DB_NAME,
 		table: SURL_TABLE,
 		hash_values: [id],
-		get_attributes: [COL_URL, COL_HITS],
+		get_attributes: [COL_URL, COL_HITS, COL_VISITS, COL_EXPIRY],
 	});
 
 	const config = { ...DB_CONFIG, data };
@@ -91,6 +91,9 @@ const getOriginalUrl = async (id) => {
 };
 
 const getUrlHits = async (id) => {
+	if (!id) {
+		throw new Error("GET HITS QUERY: args missing");
+	}
 	const data = JSON.stringify({
 		operation: "search_by_hash",
 		schema: DB_NAME,
@@ -114,6 +117,9 @@ const getUrlHits = async (id) => {
 };
 
 const updateUrlHits = async (id, hits) => {
+	if (!id || hits < 0) {
+		throw new Error("UPDATE HITS QUERY: args missing");
+	}
 	const data = JSON.stringify({
 		operation: "update",
 		schema: DB_NAME,
@@ -140,10 +146,36 @@ const updateUrlHits = async (id, hits) => {
 	}
 };
 
+const deleteUrl = async (id) => {
+	if (!id) {
+		throw new Error("DELETE URL QUERY: args missing");
+	}
+	const data = JSON.stringify({
+		operation: "delete",
+		schema: DB_NAME,
+		table: SURL_TABLE,
+		hash_values: [id],
+	});
+
+	const config = { ...DB_CONFIG, data };
+
+	try {
+		const response = await request(config);
+		const { deleted_hashes } = response.data;
+		if (deleted_hashes.length > 0) {
+			return [true, null];
+		}
+		return [null, null];
+	} catch (error) {
+		return [null, "Something went wrong"];
+	}
+};
+
 module.exports = {
 	createTable,
 	insertUrl,
 	getOriginalUrl,
 	updateUrlHits,
 	getUrlHits,
+	deleteUrl,
 };

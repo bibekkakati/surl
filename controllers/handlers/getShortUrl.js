@@ -1,4 +1,4 @@
-const { insertUrl } = require("../../db/query");
+const DB = require("../../db/query");
 const isValidURL = require("../../helpers/isValidURL");
 const URL_STORE = require("../../store/urlStore");
 const KEY_STORE = require("../../store/keyStore");
@@ -16,7 +16,11 @@ const getShortUrl = async (url) => {
 	}
 	// Key Gen Limit is 5
 	const retryLimit = 5;
-	var shortUrlId = null;
+	let shortUrlId = null;
+
+	// Set 2 years expiry
+	const date = Date.now() + 31536000000;
+	const expiry = new Date(date).toUTCString();
 
 	for (let i = 0; i < retryLimit; i++) {
 		const key = KEY_STORE.get();
@@ -24,16 +28,12 @@ const getShortUrl = async (url) => {
 		if (URL_STORE.get(key)) {
 			continue;
 		}
-		const [result, error] = await insertUrl(key, url);
+		const [result, error] = await DB.insertUrl(key, url, expiry);
 		if (error !== null) {
 			break;
 		}
 		if (result !== null) {
 			shortUrlId = key;
-			URL_STORE.set(key, {
-				url: url,
-				hits: 0,
-			});
 			break;
 		}
 	}
