@@ -27,7 +27,20 @@ app.use("/", require("./controllers/routes").clientRoutes);
 app.use("/api/url", require("./controllers/routes").urlRoutes);
 
 const PORT = process.env.PORT;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
 	createTable();
 	console.log("Server is running at http://localhost:" + PORT);
 });
+
+const handleExit = async (signal) => {
+	console.log(`Received ${signal}. Close my server properly.`);
+	console.log("Closing HTTP server");
+	server.close((err) => {
+		if (err) console.error(err);
+		console.log("HTTP server closed");
+		process.exit(0);
+	});
+};
+process.on("SIGINT", handleExit);
+process.on("SIGQUIT", handleExit);
+process.on("SIGTERM", handleExit);

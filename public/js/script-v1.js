@@ -52,20 +52,18 @@ function changeTheme() {
 	window.localStorage.setItem("THEME", currThemeClassName);
 }
 
-function copyToClipboard() {
-	let selection = window.getSelection();
-	let range = document.createRange();
-	range.selectNodeContents(resultLink);
-	selection.removeAllRanges();
-	selection.addRange(range);
-	document.execCommand("Copy");
-	selection.removeAllRanges();
-
-	const tooltipText = copyTooltip.innerText;
-	copyTooltip.innerText = "Copied";
-	setTimeout(() => {
-		copyTooltip.innerText = tooltipText;
-	}, 3000);
+async function copyToClipboard() {
+	try {
+		await navigator.clipboard.writeText(resultLink.innerText);
+		const tooltipText = copyTooltip.innerText;
+		copyTooltip.innerText = "Copied";
+		setTimeout(() => {
+			copyTooltip.innerText = tooltipText;
+		}, 3000);
+	} catch (error) {
+		showError("Oops! Something went wrong");
+	}
+	return;
 }
 
 function getSurl() {

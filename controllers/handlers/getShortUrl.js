@@ -18,9 +18,8 @@ const getShortUrl = async (url) => {
 	const retryLimit = 5;
 	let shortUrlId = null;
 
-	// Set 2 years expiry
-	const date = Date.now() + 31536000000;
-	const expiry = new Date(date).toUTCString();
+	// Set 2 years expiry in milliseconds
+	const expiry = Date.now() + 31536000000;
 
 	for (let i = 0; i < retryLimit; i++) {
 		const key = KEY_STORE.get();

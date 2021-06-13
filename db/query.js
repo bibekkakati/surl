@@ -73,7 +73,7 @@ const getOriginalUrl = async (id) => {
 		schema: DB_NAME,
 		table: SURL_TABLE,
 		hash_values: [id],
-		get_attributes: [COL_URL, COL_HITS, COL_VISITS, COL_EXPIRY],
+		get_attributes: [COL_URL, COL_HITS, COL_EXPIRY],
 	});
 
 	const config = { ...DB_CONFIG, data };
