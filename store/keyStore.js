@@ -1,19 +1,17 @@
-const getUniqueKey = require("../helpers/getUniqueKey");
+const { getKeys } = require("../services/keygen/action");
 
-const KEY_STORE = [];
+var KEY_STORE = [];
 
-const get = () => {
-	let key = KEY_STORE.pop() || getUniqueKey();
+const get = async () => {
 	if (KEY_STORE.length <= 0) {
-		generateKeys();
+		const [keys, error] = await getKeys();
+		if (error !== null) {
+			console.error("GET KEYS ERROR: ", error);
+			return null;
+		}
+		KEY_STORE = keys;
 	}
-	return key;
-};
-
-const generateKeys = async () => {
-	for (let i = 0; i < 100; i++) {
-		KEY_STORE.push(getUniqueKey());
-	}
+	return KEY_STORE.pop();
 };
 
 module.exports = {

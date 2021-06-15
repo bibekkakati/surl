@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package KeyPackage;
+
+service Key {
+    rpc GetKeys (ServerInfo) returns (Keys) {}
+}
+
+message ServerInfo {
+    string id = 1;
+}
+
+message Keys {
+    bool success = 1;
+    repeated string keys = 2;
+}

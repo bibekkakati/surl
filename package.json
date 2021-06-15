@@ -14,6 +14,8 @@
 	"author": "Bibek",
 	"license": "ISC",
 	"dependencies": {
+		"@grpc/grpc-js": "^1.3.2",
+		"@grpc/proto-loader": "^0.6.2",
 		"agentkeepalive": "^4.1.4",
 		"axios": "^0.21.1",
 		"cookie-parser": "^1.4.5",
