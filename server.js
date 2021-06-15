@@ -17,7 +17,7 @@ app.use("/api/", apiLimiter);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(
-	express.static(path.resolve(__dirname, "public"), {
+	express.static("public", {
 		maxAge: 432000000, // 5 Days
 		etag: true,
 	})
