@@ -33,7 +33,7 @@ const server = app.listen(PORT, () => {
 });
 
 const handleExit = async (signal) => {
-	console.log(`Received ${signal}. Close my server properly.`);
+	console.log(`Received ${signal}. Closing server gracefully.`);
 	console.log("Closing HTTP server");
 	server.close((err) => {
 		if (err) console.error(err);
