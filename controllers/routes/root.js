@@ -22,8 +22,7 @@ router.get("/:shortUrlId", async (req, res) => {
 	const { shortUrlId } = req.params;
 	const cookieName = "surl-visit-token";
 	const uniqueVisitor = req.cookies[cookieName] !== shortUrlId;
-	// TODO: unique visitor for analytics and track referrer and ip
-	const [originalUrl, error] = await getUrl(shortUrlId);
+	const [originalUrl, error] = await getUrl(shortUrlId, uniqueVisitor);
 
 	// Caching for 5 mins
 	res.set("Cache-Control", "private, max-age=300");

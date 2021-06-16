@@ -7,6 +7,7 @@ const SURL_TABLE = "surl_table";
 const COL_ID = "id";
 const COL_URL = "url";
 const COL_HITS = "hits";
+const COL_VISITORS = "visitors";
 const COL_EXPIRY = "expiry";
 
 const createTable = async () => {
@@ -32,7 +33,7 @@ const createTable = async () => {
 	}
 };
 
-const insertUrl = async (id, url, expiry, hits = 0) => {
+const insertUrl = async (id, url, expiry, hits = 0, visitors = 0) => {
 	if (!id || !url || !expiry) {
 		throw new Error("INSERT URL QUERY: args missing");
 	}
@@ -45,6 +46,7 @@ const insertUrl = async (id, url, expiry, hits = 0) => {
 				[COL_ID]: id,
 				[COL_URL]: url,
 				[COL_HITS]: hits,
+				[COL_VISITORS]: visitors,
 				[COL_EXPIRY]: expiry,
 			},
 		],
@@ -73,7 +75,7 @@ const getOriginalUrl = async (id) => {
 		schema: DB_NAME,
 		table: SURL_TABLE,
 		hash_values: [id],
-		get_attributes: [COL_URL, COL_HITS, COL_EXPIRY],
+		get_attributes: [COL_URL, COL_HITS, COL_VISITORS, COL_EXPIRY],
 	});
 
 	const config = { ...DB_CONFIG, data };
@@ -116,8 +118,8 @@ const getUrlHits = async (id) => {
 	}
 };
 
-const updateUrlHits = async (id, hits) => {
-	if (!id || hits < 0) {
+const updateUrlHits = async (id, hits, visitors) => {
+	if (!id || hits < 0 || visitors < 0) {
 		throw new Error("UPDATE HITS QUERY: args missing");
 	}
 	const data = JSON.stringify({
@@ -128,6 +130,7 @@ const updateUrlHits = async (id, hits) => {
 			{
 				[COL_ID]: id,
 				[COL_HITS]: hits,
+				[COL_VISITORS]: visitors,
 			},
 		],
 	});
