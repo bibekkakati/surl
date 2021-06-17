@@ -8,7 +8,7 @@ const packageDefinition = protoLoader.loadSync(
 const grpcObject = grpc.loadPackageDefinition(packageDefinition);
 const KeyPackage = grpcObject.KeyPackage;
 
-const clientId = getUniqueKey();
+const SERVER_ID = process.env.SERVER_ID;
 
 const client = new KeyPackage.Key(
 	"localhost:6000",
@@ -17,7 +17,7 @@ const client = new KeyPackage.Key(
 
 const getKeys = () => {
 	return new Promise((resolve, reject) => {
-		client.getKeys({ id: clientId }, (err, res) => {
+		client.getKeys({ id: SERVER_ID }, (err, res) => {
 			if (err) {
 				return resolve([null, err]);
 			}

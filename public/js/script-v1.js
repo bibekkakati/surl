@@ -80,6 +80,7 @@ function getSurl() {
 	if (url[url.length - 1] === "/") {
 		url = url.slice(0, url.length - 1);
 	}
+	getSurlBtn.onclick = nill;
 	fetch(BASE_URL + "/api/url/short?url=" + url)
 		.then((response) => response.json())
 		.then((data) => {
@@ -92,6 +93,9 @@ function getSurl() {
 		})
 		.catch((e) => {
 			showError("Oops! Something went wrong");
+		})
+		.finally(() => {
+			getSurlBtn.onclick = getSurl;
 		});
 }
 
