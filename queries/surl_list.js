@@ -1,8 +1,8 @@
 const request = require("../config/request");
 const DB_CONFIG = require("../config/database");
 
-const DB_NAME = "surls";
-const SURL_TABLE = "surl_table";
+const DB_NAME = process.env.DB_NAME;
+const SURL_TABLE = "surl_list";
 
 const COL_ID = "id";
 const COL_URL = "url";
@@ -60,7 +60,7 @@ const insertUrl = async (id, url, expiry, hits = 0, visitors = 0) => {
 		if (inserted_hashes.length > 0) {
 			return [id, null];
 		}
-		return [null, null];
+		return [null, "Key already exists"];
 	} catch (error) {
 		return [null, "Something went wrong"];
 	}

@@ -1,4 +1,4 @@
-const DB = require("../../db/query");
+const SURL_DB = require("../../queries/surl_list");
 const URL_STORE = require("../../store/urlStore");
 
 const getHits = async (shortUrlId) => {
@@ -11,7 +11,7 @@ const getHits = async (shortUrlId) => {
 		return [data.hits, null];
 	}
 	//Cache miss
-	const [result, error] = await DB.getUrlHits(shortUrlId);
+	const [result, error] = await SURL_DB.getUrlHits(shortUrlId);
 	if (error !== null) {
 		return [null, error];
 	}

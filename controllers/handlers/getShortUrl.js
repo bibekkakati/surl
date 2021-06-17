@@ -1,4 +1,4 @@
-const DB = require("../../db/query");
+const SURL_DB = require("../../queries/surl_list");
 const isValidURL = require("../../helpers/isValidURL");
 const KEY_STORE = require("../../store/keyStore");
 
@@ -21,8 +21,8 @@ const getShortUrl = async (url) => {
 	if (!key) {
 		return [null, "Something went wrong"];
 	}
-	const [result, error] = await DB.insertUrl(key, url, expiry);
-	if (error !== null) {
+	const [result, error] = await SURL_DB.insertUrl(key, url, expiry);
+	if (error !== null || result === null) {
 		return [null, "Something went wrong"];
 	}
 	return [key, null];
