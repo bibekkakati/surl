@@ -18,6 +18,9 @@ const getShortUrl = async (url) => {
 	const expiry = Date.now() + 31536000000;
 
 	const key = await KEY_STORE.get();
+	if (!key) {
+		return [null, "Something went wrong"];
+	}
 	const [result, error] = await DB.insertUrl(key, url, expiry);
 	if (error !== null) {
 		return [null, "Something went wrong"];
