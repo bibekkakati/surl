@@ -1,9 +1,9 @@
 const express = require("express");
-const noCache = require("../../middlewares/noCache");
+const setHeader = require("../../middlewares/setHeader");
 const router = express.Router();
 const { getHits, getUrl } = require("../handlers");
 
-router.use(noCache);
+router.use(setHeader);
 
 router.get("/", (req, res) => {
 	return res.render("index");
