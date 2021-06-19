@@ -15,7 +15,7 @@ const client = new KeyPackage.Key(
 	grpc.credentials.createInsecure()
 );
 
-const getKeys = () => {
+const getKeys = async () => {
 	return new Promise((resolve, reject) => {
 		client.getKeys({ id: SERVER_ID }, (err, res) => {
 			if (err) {

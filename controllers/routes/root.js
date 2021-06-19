@@ -2,10 +2,11 @@ const express = require("express");
 const setHeader = require("../../middlewares/setHeader");
 const router = express.Router();
 const { getHits, getUrl } = require("../handlers");
+const inProduction = process.env.NODE_ENV !== "development";
 
 router.use(setHeader);
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
 	return res.render("index");
 });
 
@@ -35,7 +36,7 @@ router.get("/:shortUrlId", async (req, res) => {
 			path: "/" + shortUrlId,
 			maxAge: 63100000, // 2 Years
 			httpOnly: true,
-			secure: process.env.NODE_ENV !== "development",
+			secure: inProduction,
 		});
 	return res.redirect(301, originalUrl);
 });

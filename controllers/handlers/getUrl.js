@@ -6,7 +6,7 @@ const getUrl = async (shortUrlId, uniqueVisitor) => {
 	if (!shortUrlId) {
 		return [null, "Invalid Surl ID"];
 	}
-	const data = URL_STORE.get(shortUrlId);
+	const data = await URL_STORE.get(shortUrlId);
 	// Cache hit
 	if (
 		data &&

@@ -1,4 +1,5 @@
 require("dotenv").config();
+const compression = require("compression");
 const express = require("express");
 const app = express();
 const helmet = require("helmet");
@@ -10,6 +11,7 @@ const apiLimiter = require("./config/rateLimiter");
 const cookieParser = require("cookie-parser");
 
 app.enable("trust proxy");
+app.use(compression());
 app.use(helmet());
 app.use(cors);
 app.use(cookieParser());
@@ -29,14 +31,10 @@ app.use("/api/url", require("./controllers/routes").urlRoutes);
 
 const PORT = process.env.PORT;
 const SERVER_ID = process.env.SERVER_ID;
+
 const server = app.listen(PORT, async () => {
-	console.log("Creating SURL_LIST table...");
 	await SURL_DB.createTable();
-
-	console.log("Creating SERVER_LIST_DB table...");
 	await SERVER_LIST_DB.createTable();
-
-	console.log("Registering the server: ", SERVER_ID);
 	await SERVER_LIST_DB.insertServerId(SERVER_ID);
 
 	console.log("Server is running at http://localhost:" + PORT);
