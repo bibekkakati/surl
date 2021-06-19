@@ -6,8 +6,8 @@ const helmet = require("helmet");
 const path = require("path");
 const SURL_DB = require("./queries/surl_list");
 const SERVER_LIST_DB = require("./queries/server_list");
-const cors = require("./config/cors");
-const apiLimiter = require("./config/rateLimiter");
+const cors = require("./middlewares/cors");
+const apiLimiter = require("./middlewares/rateLimiter");
 const cookieParser = require("cookie-parser");
 
 app.enable("trust proxy");
